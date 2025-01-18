@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Sanctuary and Well-Lighted Place</title>
     <style>
+        @font-face {
+            font-family: 'font';
+            src: url('font.ttf') format('truetype');
+        }
+
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             overflow: hidden;
-            font-family: 'Arial', sans-serif;
+            font-family: 'font', Arial, sans-serif;
             color: #ffffff;
             text-align: center;
         }
@@ -45,9 +50,6 @@
             padding: 20px;
             border-radius: 10px;
         }
-        audio {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -76,9 +78,22 @@
         </div>
     </div>
 
-    <audio autoplay loop>
+    <audio id="background-audio" loop>
         <source src="carpenters.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
+    <script>
+        window.addEventListener('load', function() {
+            var audio = document.getElementById('background-audio');
+            audio.play().catch(function() {
+                console.log('Autoplay blocked. Trying to resume after interaction.');
+            });
+
+            document.body.addEventListener('click', function() {
+                audio.play();
+            });
+        });
+    </script>
 </body>
 </html>

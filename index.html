@@ -23,10 +23,9 @@
             text-align: center;
             overflow-x: hidden;
             background-color: #000;
-        }
-
+         }
         .background-video {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -41,7 +40,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);  /* Darker overlay */
+            background: linear-gradient(
+                45deg,
+                rgba(0, 0, 0, 0.6),
+                rgba(0, 0, 0, 0.5)
+            );
             z-index: -1;
         }
 
@@ -109,6 +112,29 @@
             color: var(--accent);
         }
 
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            z-index: 100;
+        }
+
+        .audio-controls:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .audio-icon {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-primary);
+        }
+
         @media (max-width: 768px) {
             .poetry {
                 font-size: 1.2em;
@@ -119,6 +145,21 @@
             .container {
                 padding: 20px 10px;
             }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
     </style>
 </head>
@@ -141,11 +182,11 @@ Cradled by warmth, bathed in soft light, and surrounded by quiet thoughts.</p>
             It's my quiet place, where I can just be.</p>
         </div>
     </div>
-    <audio id="background-audio" autoplay loop>
+<audio id="background-audio" autoplay loop>
         <source src="carpenters.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
-    <script>
+	   <script>
         window.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('background-audio');
             audio.volume = 0.5;
@@ -158,6 +199,49 @@ Cradled by warmth, bathed in soft light, and surrounded by quiet thoughts.</p>
             };
             playAudio();
             document.body.addEventListener('click', playAudio);
+        });
+    </script>
+    <div class="scroll-indicator">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+        </svg>
+    </div>
+    <audio id="background-audio" loop>
+        <source src="carpenters.mp3" type="audio/mpeg">
+    </audio>
+
+            // Parallax effect for poetry sections
+            window.addEventListener('scroll', () => {
+                const poetry = document.querySelector('.poetry');
+                const scrolled = window.pageYOffset;
+                poetry.style.transform = `translateY(${scrolled * 0.1}px)`;
+            });
+
+            // Fade in elements as they come into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.poetry p').forEach(p => {
+                observer.observe(p);
+            });
+
+            // Hide scroll indicator when scrolled
+            window.addEventListener('scroll', () => {
+                const scrollIndicator = document.querySelector('.scroll-indicator');
+                if (window.scrollY > 100) {
+                    scrollIndicator.style.opacity = '0';
+                } else {
+                    scrollIndicator.style.opacity = '0.7';
+                }
+            });
         });
     </script>
 </body>

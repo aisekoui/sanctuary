@@ -23,6 +23,10 @@
             text-align: center;
             overflow-x: hidden;
             background-color: #000;
+          /* Subtle background texture (you can replace with a pattern if preferred) */
+          background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAAcElEQVRYw+2XwQnAMAzDv/Y/eU3Qk0L03gJ7gA2gqB4LhEJAyK0Q0Eog2C0xQ0k0jJpU91f667kQJj2yDYYiS44a4jW4kR+C3+O/j+eDq8l/95v+5f95/t4f1z82G7+2G7+4G984/20AAAAABJRU5ErkJggg==');
+          background-size: cover;
+          opacity: 0.95;
         }
 
         .snowflake {
@@ -33,6 +37,9 @@
             user-select: none;
             pointer-events: none;
             animation: fall linear forwards;
+          
+          /* More realistic snowflake behavior */
+          font-size: 10px; /* Initial size - dynamically changed in JS*/
         }
 
         @keyframes fall {
@@ -48,7 +55,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 1; /* Changed from -1 to 1 */
+            z-index: 1;
         }
       
         .container {
@@ -58,6 +65,13 @@
             min-height: 200vh;
             opacity: 0;
             animation: fadeIn 1.5s ease-out forwards;
+           /* Basic parallax effect */
+            transform: translateY(0);
+            transition: transform 0.3s ease; 
+        }
+
+        .container.scrolled {
+            transform: translateY(20px); /* adjust the parallax amount */
         }
 
         @keyframes fadeIn {
@@ -74,6 +88,11 @@
 
         .image-container:hover {
             transform: scale(1.02);
+        }
+        /* Adding a soft hover effect to the image */
+        .image-container:hover img {
+            box-shadow: 0 8px 30px rgba(201, 169, 124, 0.7); /* Accent color shadow */
+            filter: brightness(1.1) ; /* Slightly brighter on hover */
         }
 
         img {
@@ -123,6 +142,11 @@
             color: var(--text-secondary);
             opacity: 0.8;
             text-align: right;
+        }
+        
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
         }
 
         @media (max-width: 768px) {
@@ -181,19 +205,40 @@
             function createSnowflake() {
                 const snowflake = document.createElement("div");
                 snowflake.className = "snowflake";
+
+                // Randomized initial left position
                 snowflake.style.left = Math.random() * 100 + "vw";
-                snowflake.style.animationDuration = 3 + Math.random() * 5 + "s";
+                 
+                // Randomized size
+                const size = Math.random() * 10 + 10;
+                snowflake.style.fontSize = size + "px";
+
+                // Randomized animation speed based on size for realism
+                snowflake.style.animationDuration = (3 + Math.random() * 5) * (size / 15) + "s";
+
+                 // Randomized opacity
                 snowflake.style.opacity = Math.random() * 0.8 + 0.2;
-                snowflake.style.fontSize = Math.random() * 10 + 10 + "px";
+
                 snowflake.textContent = "❄";
                 snowContainer.appendChild(snowflake);
 
                 setTimeout(() => {
                     snowflake.remove();
-                }, 8000); // Remove snowflake after it falls
+                }, 8000);
             }
 
-            setInterval(createSnowflake, 200); // Generate new snowflakes every 200ms
+            setInterval(createSnowflake, 200);
+          
+            //Parallax effect
+            window.addEventListener('scroll', function () {
+                const container = document.querySelector('.container')
+                if (window.scrollY > 100) {
+                  container.classList.add('scrolled')
+                }
+                else {
+                  container.classList.remove('scrolled')
+                }
+            })
         });
     </script>
 </body>

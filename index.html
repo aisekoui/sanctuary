@@ -28,17 +28,16 @@
         .snowflake {
             position: absolute;
             top: -10px;
-            width: 8px;
-            height: 8px;
-            background: var(--text-primary);
-            opacity: 0.8;
-            border-radius: 50%;
-            animation: fall linear infinite;
+            left: 0;
+            color: var(--text-primary);
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear forwards;
         }
 
         @keyframes fall {
             to {
-                transform: translateY(100vh) translateX(calc(10vw * var(--direction)));
+                transform: translateY(100vh);
             }
         }
 
@@ -119,10 +118,11 @@
         .footer {
             position: fixed;
             bottom: 10px;
-            right: 30px;
+            right: 15px;
             font-size: 0.9em;
             color: var(--text-secondary);
             opacity: 0.8;
+            text-align: right;
         }
 
         @media (max-width: 768px) {
@@ -166,26 +166,34 @@
         window.addEventListener('DOMContentLoaded', function() {
             const audio = document.getElementById('background-audio');
             audio.volume = 0.5;
+
             const playAudio = () => {
-                audio.play().then(() => {
-                    console.log('Audio is playing');
-                }).catch((error) => {
+                audio.play().catch((error) => {
                     console.log('Autoplay failed, retrying...');
                 });
             };
+
             playAudio();
             document.body.addEventListener('click', playAudio);
 
-            const snowContainer = document.querySelector('.snow-container');
-            for (let i = 0; i < 100; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                snowflake.style.left = Math.random() * 100 + 'vw';
-                snowflake.style.animationDuration = Math.random() * 5 + 3 + 's';
-                snowflake.style.animationDelay = Math.random() * 3 + 's';
-                snowflake.style.setProperty('--direction', Math.random() > 0.5 ? '1' : '-1');
+            const snowContainer = document.querySelector(".snow-container");
+
+            function createSnowflake() {
+                const snowflake = document.createElement("div");
+                snowflake.className = "snowflake";
+                snowflake.style.left = Math.random() * 100 + "vw";
+                snowflake.style.animationDuration = 3 + Math.random() * 5 + "s";
+                snowflake.style.opacity = Math.random() * 0.8 + 0.2;
+                snowflake.style.fontSize = Math.random() * 10 + 10 + "px";
+                snowflake.textContent = "❄";
                 snowContainer.appendChild(snowflake);
+
+                setTimeout(() => {
+                    snowflake.remove();
+                }, 8000); // Remove snowflake after it falls
             }
+
+            setInterval(createSnowflake, 200); // Generate new snowflakes every 200ms
         });
     </script>
 </body>

@@ -25,15 +25,14 @@
             background-color: #0f1624;
         }
 
-        /* Snowflakes */
-        .snowflake {
+        .snow {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -2;
+            pointer-events: none;
         }
 
         .overlay {
@@ -51,113 +50,55 @@
             z-index: 1;
             padding: 40px 20px;
             min-height: 200vh;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-out forwards;
         }
 
-        .name-section {
+        #name-display {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1000;
             text-align: right;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .name-section p {
+        #name-display p {
             margin: 0;
-            line-height: 1.4;
+            padding: 0;
+            font-size: 16px;
+            color: white;
         }
 
-        .name {
-            font-size: 1.1em;
-            font-weight: 600;
+        #name-display .name {
+            font-weight: bold;
             color: var(--accent);
-        }
-
-        .section {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .image-container {
-            position: relative;
-            max-width: 900px;
-            margin: 0 auto 40px;
-            transition: transform var(--transition-speed);
-        }
-
-        .image-container:hover {
-            transform: scale(1.02);
         }
 
         img {
-            max-width: 100%;
+            max-width: 90%;
             height: auto;
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-            transition: filter var(--transition-speed);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         .poetry {
-            margin: 40px auto;
-            font-size: 1.4em;
-            line-height: 1.8em;
+            margin: 20px auto;
+            font-size: 1.2em;
+            line-height: 1.6em;
             max-width: 800px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 40px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 1s ease-out forwards;
-            animation-delay: 0.5s;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .poetry p {
-            margin: 20px 0;
-            transition: transform var(--transition-speed);
-        }
-
-        .poetry p:hover {
-            transform: translateX(10px);
-            color: var(--accent);
-        }
-
-        @media (max-width: 768px) {
-            .poetry {
-                font-size: 1.2em;
-                padding: 20px;
-                margin: 20px;
-            }
-
-            .container {
-                padding: 20px 10px;
-            }
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
+    <canvas class="snow"></canvas>
     <div class="overlay"></div>
     <div class="container">
-        <div class="image-container">
-            <img src="livin_room.png" alt="My Sanctuary" loading="lazy">
-        </div>
+        <img src="livin_room.png" alt="My Sanctuary">
         <div class="poetry">
             <p>This is where I rest when the world feels heavy,<br>
             Cradled by warmth, bathed in soft light, and surrounded by quiet thoughts.</p>
@@ -167,9 +108,9 @@
             It's my quiet place, where I can just be.</p>
         </div>
     </div>
-    <div class="name-section">
+    <div id="name-display">
         <p class="name">Luis Kayne Dela Cruz</p>
-        <p class="section">11 - Lao Tzu</p>
+        <p>11 - Lao Tzu</p>
     </div>
     <audio id="background-audio" autoplay loop>
         <source src="carpenters.mp3" type="audio/mpeg">
@@ -191,50 +132,60 @@
             document.body.addEventListener('click', playAudio);
         });
 
-        // Snowflakes
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            
-            // Random starting position
-            snowflake.style.left = Math.random() * window.innerWidth + 'px';
-            snowflake.style.top = '-10px';
-            
-            // Random size
-            const size = Math.random() * 4 + 2;
-            snowflake.style.width = size + 'px';
-            snowflake.style.height = size + 'px';
-            
-            // Random opacity
-            snowflake.style.opacity = Math.random() * 0.8 + 0.2;
-            
-            document.body.appendChild(snowflake);
-            
-            // Animation
-            let positionX = parseFloat(snowflake.style.left);
-            let positionY = -10;
-            const speed = Math.random() * 1 + 0.5;
-            const wobble = Math.random() * 2 - 1;
-            
-            function fall() {
-                positionY += speed;
-                positionX += Math.sin(positionY * 0.02) * wobble;
-                
-                snowflake.style.top = positionY + 'px';
-                snowflake.style.left = positionX + 'px';
-                
-                if (positionY < window.innerHeight) {
-                    requestAnimationFrame(fall);
-                } else {
-                    snowflake.remove();
+        // Snowfall animation
+        let canvas = document.querySelector('.snow');
+        let ctx = canvas.getContext('2d');
+        let particles = [];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 1 + 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y > canvas.height) {
+                    this.y = 0;
+                    this.x = Math.random() * canvas.width;
                 }
             }
-            
-            fall();
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
-        // Create new snowflakes periodically
-        setInterval(createSnowflake, 100);
+        function init() {
+            for (let i = 0; i < 100; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let particle of particles) {
+                particle.update();
+                particle.draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        init();
+        animate();
     </script>
 </body>
 </html>

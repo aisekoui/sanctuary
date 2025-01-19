@@ -6,7 +6,7 @@
     <title>My Sanctuary and Well-Lighted Place</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&display=swap');
-        
+
         :root {
             --text-primary: #ffffff;
             --text-secondary: #e0e0e0;
@@ -23,10 +23,10 @@
             text-align: center;
             overflow-x: hidden;
             background-color: #000;
-          /* Subtle background texture (you can replace with a pattern if preferred) */
-          background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAAcElEQVRYw+2XwQnAMAzDv/Y/eU3Qk0L03gJ7gA2gqB4LhEJAyK0Q0Eog2C0xQ0k0jJpU91f667kQJj2yDYYiS44a4jW4kR+C3+O/j+eDq8l/95v+5f95/t4f1z82G7+2G7+4G984/20AAAAABJRU5ErkJggg==');
-          background-size: cover;
-          opacity: 0.95;
+            /* Subtle background texture */
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAAcElEQVRYw+2XwQnAMAzDv/Y/eU3Qk0L03gJ7gA2gqB4LhEJAyK0Q0Eog2C0xQ0k0jJpU91f667kQJj2yDYYiS44a4jW4kR+C3+O/j+eDq8l/95v+5f95/t4f1z82G7+2G7+4G984/20AAAAABJRU5ErkJggg==');
+            background-size: cover;
+            opacity: 0.95;
         }
 
         .snowflake {
@@ -37,9 +37,8 @@
             user-select: none;
             pointer-events: none;
             animation: fall linear forwards;
-          
-          /* More realistic snowflake behavior */
-          font-size: 10px; /* Initial size - dynamically changed in JS*/
+             /* More realistic snowflake behavior */
+            font-size: 10px; /* Initial size - dynamically changed in JS*/
         }
 
         @keyframes fall {
@@ -57,7 +56,7 @@
             pointer-events: none;
             z-index: 1;
         }
-      
+
         .container {
             position: relative;
             z-index: 2;
@@ -65,13 +64,13 @@
             min-height: 200vh;
             opacity: 0;
             animation: fadeIn 1.5s ease-out forwards;
-           /* Basic parallax effect */
+             /* Basic parallax effect */
             transform: translateY(0);
-            transition: transform 0.3s ease; 
+            transition: transform 0.3s ease;
         }
 
         .container.scrolled {
-            transform: translateY(20px); /* adjust the parallax amount */
+            transform: translateY(20px);
         }
 
         @keyframes fadeIn {
@@ -135,30 +134,24 @@
         }
 
         .footer {
-            position: fixed;
+          position: fixed;
             bottom: 10px;
-            right: 15px;
+            right: auto; /* Remove the right alignment */
+            left: 15px; /* Push it to the left */
             font-size: 0.9em;
             color: var(--text-secondary);
             opacity: 0.8;
-            text-align: right;
+            text-align: left; /* Align text to the left */
+            /* Add subtle text shadow for better visibility */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
-        
         /* Smooth Scrolling */
         html {
             scroll-behavior: smooth;
         }
-
-        @media (max-width: 768px) {
-            .poetry {
-                font-size: 1.2em;
-                padding: 20px;
-                margin: 20px;
-            }
-
-            .container {
-                padding: 20px 10px;
-            }
+        /* Adds a subtle glow to the poetry section for an added effect*/
+        .poetry {
+          box-shadow: 0 0 20px rgba(201, 169, 124, 0.2)
         }
     </style>
 </head>
@@ -182,7 +175,7 @@
         Luis Kayne Dela Cruz<br>
         11 - Lao Tzu
     </div>
-    <audio id="background-audio" autoplay loop>
+    <audio id="background-audio" loop>
         <source src="carpenters.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -191,14 +184,20 @@
             const audio = document.getElementById('background-audio');
             audio.volume = 0.5;
 
+            // Autoplay audio on page load (with a try/catch for potential browser limitations)
             const playAudio = () => {
                 audio.play().catch((error) => {
-                    console.log('Autoplay failed, retrying...');
+                    console.log('Autoplay failed: ' + error);
+                     // Attempt to play on the first user interaction (like a click)
+                     document.addEventListener('click', function playAfterClick() {
+                         audio.play().catch(e=> console.error("Autoplay failed after click:", e));
+                          document.removeEventListener('click', playAfterClick);
+                    });
                 });
             };
 
             playAudio();
-            document.body.addEventListener('click', playAudio);
+
 
             const snowContainer = document.querySelector(".snow-container");
 
